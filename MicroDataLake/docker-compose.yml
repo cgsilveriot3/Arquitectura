@@ -15,27 +15,27 @@ services:
     #ports:
     # - "2181:2181"
 
-  zookeeper:
-    image: zookeeper
-    restart: always
-    hostname: zoo1
-    ports:
-      - 2181:2181
+        #  zookeeper:
+        #image: zookeeper
+        #restart: always
+        #hostname: zoo1
+        #ports:
+        #- 2181:2181
     #environment:
     #ZOO_MY_ID: 1
     #ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181    
 
-  kafka:
-    image: wurstmeister/kafka:latest
-    ports:
-      - "9092:9092"
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    depends_on:
-      - zookeeper
-
+#   kafka:
+#     image: wurstmeister/kafka:latest
+#     ports:
+#       - "9092:9092"
+#     environment:
+#       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+#       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#     depends_on:
+#       - zookeeper
+# 
   hdfs-namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
     environment:
@@ -55,33 +55,33 @@ services:
     depends_on:
       - hdfs-namenode
 
-  hive:
-    image: bde2020/hive:2.3.2-postgresql-metastore
-    ports:
-      - "10000:10000"
-      - "10002:10002"
-    environment:
-      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
-      - HIVE_META_STORE_HOST=hive-metastore
-      - SERVICE_PRECONDITION=hive-metastore:9083
-    depends_on:
-      - hdfs-namenode
-      - hdfs-datanode
-      - hive-metastore
-
-  hive-metastore:
-    image: bde2020/hive-metastore-postgresql:2.3.0
-    environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=metastore
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-    ports:
-      - "9083:9083"
-    depends_on:
-      - postgres
-
+#   hive:
+#     image: bde2020/hive:2.3.2-postgresql-metastore
+#     ports:
+#       - "10000:10000"
+#       - "10002:10002"
+#     environment:
+#       - HIVE_METASTORE_URI=thrift://hive-metastore:9083
+#       - HIVE_META_STORE_HOST=hive-metastore
+#       - SERVICE_PRECONDITION=hive-metastore:9083
+#     depends_on:
+#       - hdfs-namenode
+#       - hdfs-datanode
+#       - hive-metastore
+# 
+#   hive-metastore:
+#     image: bde2020/hive-metastore-postgresql:2.3.0
+#     environment:
+#       - POSTGRES_HOST=postgres
+#       - POSTGRES_PORT=5432
+#       - POSTGRES_DB=metastore
+#       - POSTGRES_USER=airflow
+#       - POSTGRES_PASSWORD=airflow
+#     ports:
+#       - "9083:9083"
+#     depends_on:
+#       - postgres
+# 
   airflow:
     image: puckel/docker-airflow:latest
     restart: always
@@ -92,6 +92,8 @@ services:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'True'
     ports:
       - "8080:8080"
+    volumes:
+      - /mnt/c/Users/cgsilveriot/Engineer/MicroDataLake/AirFlow_Dags:/usr/local/airflow/dags    
     depends_on:
       - postgres
 
