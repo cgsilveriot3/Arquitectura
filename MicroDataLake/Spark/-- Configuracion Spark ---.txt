@@ -1,0 +1,14 @@
+-- Configuracion Spark ---
+echo "<172.18.0.4> namenode" >> /etc/hosts
+
+docker cp microdatalake-hdfs-namenode-1:/etc/hadoop/core-site.xml ./core-site.xml
+
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://namenode:8020</value>
+    </property>
+</configuration>
+
+docker cp ./core-site.xml microdatalake-hdfs-namenode-1:/etc/hadoop/core-site.xml
