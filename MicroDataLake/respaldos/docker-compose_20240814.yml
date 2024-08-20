@@ -1,0 +1,73 @@
+#version: '3.7'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5432:5432"
+    networks:
+      - airflow_network
+
+  airflow:
+    image: puckel/docker-airflow:latest
+    restart: always
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
+      AIRFLOW__CORE__FERNET_KEY: mQOFQEyfC28IP5ipi--PJF1f1UHVEqwIL8keubsg3R0=
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+    ports:
+      - "8080:8080"
+    volumes:
+      - /mnt/c/Users/cgsilveriot/Engineer/MicroDataLake/Dags:/usr/local/airflow/dags
+    depends_on:
+      - postgres
+    networks:
+      - airflow_network
+
+  hdfs-namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    environment:
+      - CLUSTER_NAME=test
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    ports:
+      - "9870:9870"
+    networks:
+      - airflow_network
+
+  hdfs-datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:8020
+    depends_on:
+      - hdfs-namenode
+    networks:
+      - airflow_network
+
+  spark:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_NAME=spark-master
+      - SPARK_MASTER_PORT=7077
+    ports:
+      - "8081:8081"
+    networks:
+      - airflow_network
+
+  spark-worker:
+    image: bitnami/spark:latest
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark
+    networks:
+      - airflow_network
+
+networks:
+  airflow_network:
+    driver: bridge

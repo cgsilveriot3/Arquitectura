@@ -88,14 +88,16 @@ services:
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
-      AIRFLOW__CORE__FERNET_KEY: dGhpcyBpcyBhIHZlcnkgc2VjdXJlIGtleQ==
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'True'
+      AIRFLOW__CORE__FERNET_KEY: mQOFQEyfC28IP5ipi--PJF1f1UHVEqwIL8keubsg3R0=
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER: hdfs://172.20.104.17:9870/user/airflow/logs
     ports:
       - "8080:8080"
     volumes:
-      - /mnt/c/Users/cgsilveriot/Engineer/MicroDataLake/AirFlow_Dags:/usr/local/airflow/dags    
+      - /mnt/c/Users/cgsilveriot/Engineer/MicroDataLake/Dags:/usr/local/airflow/dags    
     depends_on:
       - postgres
+    network_mode: "host"
 
   spark:
     image: bitnami/spark:latest

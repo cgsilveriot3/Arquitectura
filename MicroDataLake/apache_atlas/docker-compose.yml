@@ -1,0 +1,24 @@
+services:
+  atlas:
+      image: sburn/apache-atlas
+      container_name: atlas_test
+      environment:
+        - JAVA_OPTS=-Xms1024m -Xmx2048m
+        - ATLAS_OPTS=-Datlas.graph.storage.hostname=localhost -Datlas.graph.storage.port=9042
+        - ATLAS_GRAPH_STORAGE_HOSTNAME=localhost
+        - ATLAS_GRAPH_STORAGE_PORT=9042
+        - ATLAS_REST_ADDRESS=http://localhost:21000
+        - ATLAS_LOG_DIR=/var/log/atlas
+        - ATLAS_PID_DIR=/var/run/atlas
+      volumes:
+        - atlas_logs:/var/log/atlas
+        - atlas_conf:/opt/apache-atlas/conf
+      ports:
+        - "21000:21000"
+      #depends_on:
+        #- postgres
+        #- hdfs-namenode
+        #- airflow
+volumes:
+  atlas_logs:
+  atlas_conf:

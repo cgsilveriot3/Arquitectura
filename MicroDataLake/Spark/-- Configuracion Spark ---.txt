@@ -12,3 +12,239 @@ docker cp microdatalake-hdfs-namenode-1:/etc/hadoop/core-site.xml ./core-site.xm
 </configuration>
 
 docker cp ./core-site.xml microdatalake-hdfs-namenode-1:/etc/hadoop/core-site.xml
+
+
+Entra en el modo visual línea presionando V.
+Selecciona las líneas que deseas comentar moviendo el cursor hacia abajo.
+Una vez que las líneas están seleccionadas, entra en el modo de comandos presionando :. Verás algo como :'<,'> en la parte inferior de la pantalla.
+Escribe el siguiente comando para agregar un # al comienzo de cada línea seleccionada:
+sh
+Copiar código
+s/^/# /
+
+---
+start-worker.sh spark://100.26.186.172:7077
+
+cat $HADOOP_HOME/logs/hadoop-ec2-user-namenode-$(hostname).log | grep -i 'warn\|error\|exception'
+
+cat $HADOOP_HOME/logs/hadoop-ec2-user-namenode-$(hostname).log | grep -i 'error'
+cat $HADOOP_HOME/logs/hadoop-ec2-user-datanode-$(hostname).log | grep -i 'error'
+
+cat $HADOOP_HOME/logs/hadoop-ec2-user-datanode-ip-172-31-85-158.ec2.internal.log | grep -i 'warn\|error\|exception'
+cat $HADOOP_HOME/logs/hadoop-ec2-user-namenode-ip-172-31-85-158.ec2.internal.log | grep -i 'warn\|error\|exception'
+
+interfaz: srpark
+http://ec2-100-26-186-172.compute-1.amazonaws.com:8080
+
+ec2-100-26-186-172.compute-1.amazonaws.com
+
+wget https://www.sqlite.org/2023/sqlite-autoconf-3410000.tar.gz
+tar xvfz sqlite-autoconf-3410000.tar.gz
+cd sqlite-autoconf-3410000
+./configure --prefix=/usr/local
+make
+sudo make installCREATE USER new_user WITH PASSWORD 'new_password';
+ALTER USER new_user WITH SUPERUSER;
+
+
+--------------------------------
+pip3 install Flask-WTF==0.14.3 WTForms==2.3.3 Flask-Caching==1.10.1 Flask-AppBuilder==3.4.5 cachelib==0.6.0
+
+----------------------------------------configuracion ---------------------------------------
+sudo vi /var/lib/pgsql/data/postgresql.conf
+descomentar puerto y agregar que permita conecxiones
+listen_addresses = '*'
+
+sudo vi /var/lib/pgsql/data/pg_hba.conf
+host    all             all             0.0.0.0/0               md5
+
+
+CREATE USER silveriust WITH PASSWORD 'silveriust';
+CREATE DATABASE dev;
+GRANT ALL PRIVILEGES ON DATABASE dev TO silveriust;
+\q
+exit
+
+[core]
+sql_alchemy_conn = postgresql+psycopg2://yourusername:yourpassword@localhost/yourdatabase
+--------------------------------------------postgres-------------------------------------
+PASSWORD de usuario postgres
+ALTER USER postgres PASSWORD 'admin.';
+\q
+
+
+
+ALTER USER postgres PASSWORD 'postgres.';
+
+CREATE USER micro WITH PASSWORD 'micro.';
+ALTER USER micro WITH SUPERUSER;
+
+CREATE DATABASE dev;
+
+GRANT ALL PRIVILEGES ON DATABASE silveriust TO silveriust;
+ALTER USER silveriust WITH SUPERUSER;
+
+
+ssh -i /mnt/c/Users/cgsilveriot/Engineer/Aws/instance1.pem -L 8080:localhost:8080 ec2-user@52.5.248.193
+ssh -i /path/to/your/key.pem -L 8080:localhost:8080 ec2-user@your-ec2-ip
+
+
+http://52.5.248.193:8080/home
+
+sera que este tambien le pasa lo mismo que a hdfs no lo podia alcanzar por la retriccion en mi red, porque obtengo esto:
+airflow@861b7ab2eb8c:/usr/local$ psql -h 52.5.248.193 -U silveriust -d dev -p 5432
+bash: psql: command not found
+airflow@861b7ab2eb8c:/usr/local$
+
+ssh -i /mnt/c/Users/cgsilveriot/Engineer/Aws/instance1.pem -L 5432:localhost:5432 ec2-user@52.5.248.193
+172.20.104.17
+:9870
+
+--------------------------------------------------------------------
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' microdatalake-postgres-1
+172.18.0.3
+
+----
+AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@172.18.0.3:5432/airflow
+AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@localhost:5432/airflow
+
+----- reinicia server desde docker----
+airflow webserver -D
+------------------------------------cambio de permisos----------------------------------------
+chmod 644 /usr/local/airflow/test/test_hdfs.txt
+chown airflow:airflow /usr/local/airflow/test/test_hdfs.txt
+
+----------------accede como root -----
+docker exec -it --user root e20f4f9bbce1 /bin/bash
+--------------------hdfs desde dentro del docker--------------------
+hdfs dfs -ls hdfs://172.18.0.2:8020/
+
+$HADOOP_HOME/etc/hadoop/core-site.xml
+ls $HADOOP_HOME/etc/hadoop/
+
+
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://172.18.0.2:8020</value> <!-- Reemplaza <namenode_ip> con la IP real -->
+  </property>
+</configuration>
+
+------------------------bajar un archivo de un contenedor a mi maquina local ----------------------
+docker cp 08fb20d2b6e8:/opt/hadoop-3.2.1/etc/hadoop /home/mobaxterm/Engineer/MicroDataLake/hdfs/
+docker cp e20f4f9bbce1:/usr/local/airflow/airflow.cfg .
+
+---------------------------subir un archivo de mi maquina local a un contenedor-------------------------
+docker cp /path/to/destination/core-site.xml <container_id>:/path/to/original/core-site.xml
+docker cp core-site.xml 08fb20d2b6e8:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+-----------------------------------dejar core site con los permisos que tenia----
+chmod 644 /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+chown 1001:1001 /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+--------------reinicia contenedor -----------------------
+docker restart 08fb20d2b6e8
+
+-------------------------------------------------probar una imagen de docker -------------------------------------------------------------
+curl -LO https://raw.githubusercontent.com/bitnami/containers/main/bitnami/airflow/docker-compose.yml
+docker-compose up
+https://hub.docker.com/r/bitnami/airflow-scheduler
+----------------------------------------------------------------------------------
+
+-----------------------------compilar imagen docker------------------------------------------
+docker build -t airflow_hdfs_postgres_persistent .
+
+---------------ejecutar imagen docker----------
+docker run -d \
+  -p 5432:5432 \
+  -p 8080:8080 \
+  -p 9870:9870 \
+  -v ~/hadoop_data/namenode:/hadoop/dfs/name \
+  -v ~/hadoop_data/datanode:/hadoop/dfs/data \
+  -v ~/airflow/dags:/usr/local/airflow/dags \
+  airflow_hdfs_postgres_persistent
+
+--------reconstruir una imgen docker despues de modificar dockerfile-----------------
+docker build -t my_airflow_hdfs_postgres_image:v2 .
+
+docker build -t plataforma_hap_v1 .
+
+----------------validar en que ip esta corriendo el name node------
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' 08fb20d2b6e8
+
+
+with open('/usr/local/airflow/test/test_hdfs.txt', 'w') as f:f.write("HDFS connection test")
+
+---
+docker exec -it 273acda061aa /bin/bash
+----------------------------------configura datanode-----------------------------------
+subi>
+docker cp core-site.xml 273acda061aa:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+docker cp hdfs-site.xml 273acda061aa:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+bajar>
+docker cp 273acda061aa:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml .
+docker cp 273acda061aa:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml .
+
+-------------dejar archivos del data donde con los permisos-------------
+chmod 644 /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+chown 1001:1001 /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+
+chmod 644 /opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+chown 1001:1001 /opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+
+-------------------------comandos hdfs --------------------------
+hdfs dfsadmin -report
+
+------------verifica red en docker --------------------------------
+docker network ls
+docker network inspect airflow_network
+---------verifica red de un contenedor------------------------
+docker inspect <container_id> | grep NetworkSettings -A 20
+from hdfs import InsecureClient
+client = InsecureClient('http://hdfs-namenode:9870', user='airflow')
+
+------------------prueba hdfs client desde python3 de airflow-------------------
+from hdfs import InsecureClient
+client = InsecureClient('http://hdfs-namenode:9870', user='airflow')
+client.list('/')
+
+
+from hdfs import InsecureClient
+client = InsecureClient('http://hdfs-namenode:9870', user='airflow')
+with open('/usr/local/airflow/test/test_hdfs.txt', 'w') as f:
+    f.write("HDFS connection test")
+
+client.upload('/user/airflow/', '/usr/local/airflow/test/test_hdfs.txt', overwrite=True)
+
+----------otorgaar permisos  a un directorio de HDFS------------------
+hdfs dfs -chown airflow:supergroup /user/airflow
+hdfs dfs -chown airflow:supergroup /user/airflow/staging
+
+-----------instala cliet HDFS para python en el contenedor docker------------------
+ pip install hdfs
+ /usr/local/bin/python -m pip install --upgrade pip
+-------------------------------subir un Dag--------------------------------------------
+docker cp valida_hdfs_latest.py 7c120f61ecde:/usr/local/airflow/dags
+
+---------reinicia servicos web server------
+
+----- reinicia el servicio de airflow con docker----------
+docker-compose restart airflow
+--------crear volumenes de datos ----------------
+docker volume create --name=db_data
+
+-------test archivo .yml----------
+ volumes:
+      - db_data:/var/lib/postgresql/data
+command: bash -c "airflow initdb && (airflow scheduler &) && airflow webserver"
+volumes:
+    db_data:
+      external: true
+ ------- ruta de dags en local-------------------
+C:\Users\cgsilveriot\Engineer\MicroDataLake\Dags
+
+---------volumenesen docker-----------------------------
+docker volume ls
+docker inspect <container_id>
+docker volume inspect <volume_name>
+docker volume rm <volume_name>
+------------------------logs de un docker ----------------
+docker-compose logs airflow
